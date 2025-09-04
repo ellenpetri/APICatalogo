@@ -20,7 +20,8 @@ public static class CategoriaDTOMappingExtensions
 
     public static Categoria? ToCategoria(this CategoriaDTO categoriaDto)
     {
-        if (categoriaDto is null) return null;
+        if (categoriaDto is null)
+            return null;
 
         return new Categoria
         {
@@ -33,7 +34,7 @@ public static class CategoriaDTOMappingExtensions
     public static IEnumerable<CategoriaDTO> ToCategoriaDTOList(this IEnumerable<Categoria> categorias)
     {
         if (categorias is null || !categorias.Any())
-            return new List<CategoriaDTO>();
+            return [];
 
         return categorias.Select(categoria => new CategoriaDTO
         {

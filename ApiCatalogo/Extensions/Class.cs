@@ -15,7 +15,7 @@ public static class ApiExceptionMiddlewareExtesnions
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 context.Response.ContentType = "application/json";
 
-                var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                IExceptionHandlerFeature? contextFeature = context.Features.Get<IExceptionHandlerFeature>();
 
                 if (contextFeature is not null)
                 {

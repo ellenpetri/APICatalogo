@@ -3,12 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCatalogo.Context;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> option) : DbContext(option)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> option) : base(option)
-    {
-    }
-
     public DbSet<Categoria>? Categorias { get; set; }
     public DbSet<Produto>? Produtos { get; set; }
 }

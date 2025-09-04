@@ -2,14 +2,10 @@
 
 namespace ApiCatalogo.Filters;
 
-public class ApiLoggingFilter : IActionFilter
+public class ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) : IActionFilter
 {
-    private readonly ILogger<ApiLoggingFilter> _logger;
+    private readonly ILogger<ApiLoggingFilter> _logger = logger;
 
-    public ApiLoggingFilter(ILogger<ApiLoggingFilter> logger)
-    {
-        _logger = logger;
-    }
     public void OnActionExecuting(ActionExecutingContext context)
     {
         //Executa antes da Action
@@ -27,6 +23,5 @@ public class ApiLoggingFilter : IActionFilter
         _logger.LogInformation($"ModelState: {context.HttpContext.Response.StatusCode}");
         _logger.LogInformation("------------------------------------------------------------");
     }
-
 
 }

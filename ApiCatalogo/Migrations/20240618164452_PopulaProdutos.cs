@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-
 namespace ApiCatalogo.Migrations;
 
 public partial class PopulaProdutos : Migration

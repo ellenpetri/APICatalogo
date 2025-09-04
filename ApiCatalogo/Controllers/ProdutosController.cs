@@ -18,7 +18,7 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet("pagination")]
     public ActionResult<IEnumerable<ProdutoDTO>> Get([FromQuery] ProdutosParameters produtosParameters)
     {
-        var produtos = _unitOfWork.ProdutoRepository.GetProdutos(produtosParameters);
+        PagedList<Produto> produtos = _unitOfWork.ProdutoRepository.GetProdutos(produtosParameters);
 
         return ObterProdutos(produtos);
     }
@@ -26,7 +26,7 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet("filter/preco/pagination")]
     public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosFilterPreco([FromQuery] ProdutosFiltroPreco produtosFiltroPreco)
     {
-        var produtos = _unitOfWork.ProdutoRepository.GetProdutosFiltroPreco(produtosFiltroPreco);
+        PagedList<Produto> produtos = _unitOfWork.ProdutoRepository.GetProdutosFiltroPreco(produtosFiltroPreco);
 
         return ObterProdutos(produtos);
     }
@@ -45,7 +45,7 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
 
         Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
 
-        var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
+        IEnumerable<ProdutoDTO> produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
 
         return Ok(produtosDto);
     }
@@ -53,12 +53,12 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet("ProdutosCategoria/{id}")]
     public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosCategoria(int id)
     {
-        var produtos = _unitOfWork.ProdutoRepository.GetProdutoByCategoria(id);
+        IEnumerable<Produto>? produtos = _unitOfWork.ProdutoRepository.GetProdutoByCategoria(id);
 
         if (produtos is null || !produtos.Any())
             return NotFound("Produtos não encontrados.");
 
-        var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
+        IEnumerable<ProdutoDTO> produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
 
         return Ok(produtosDto);
     }
@@ -66,12 +66,12 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet]
     public ActionResult<IEnumerable<ProdutoDTO>> Get()
     {
-        var produto = _unitOfWork.ProdutoRepository.GetAll().ToList();
+        List<Produto>? produto = _unitOfWork.ProdutoRepository.GetAll().ToList();
 
         if (produto is null)
             return NotFound("Produtos não encontrados.");
 
-        var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produto);
+        IEnumerable<ProdutoDTO> produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produto);
 
         return Ok(produtosDto);
     }
@@ -79,12 +79,12 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet("First")]
     public ActionResult<ProdutoDTO> GetPrimeiro()
     {
-        var produto = _unitOfWork.ProdutoRepository.GetAll().FirstOrDefault();
+        Produto? produto = _unitOfWork.ProdutoRepository.GetAll().FirstOrDefault();
 
         if (produto is null)
             return NotFound("Produto não encontrado.");
 
-        var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+        ProdutoDTO produtoDto = _mapper.Map<ProdutoDTO>(produto);
 
         return Ok(produtoDto);
     }
@@ -92,12 +92,12 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
     [HttpGet("ById/{id:int:min(1)}", Name = "ObterProduto")]
     public ActionResult<ProdutoDTO> Get(int id)
     {
-        var produto = _unitOfWork.ProdutoRepository.Get(c => c.ProdutoId == id);
+        Produto? produto = _unitOfWork.ProdutoRepository.Get(c => c.ProdutoId == id);
 
         if (produto is null)
             return NotFound($"Produto com o id {id} não encontrado.");
 
-        var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produto);
+        IEnumerable<ProdutoDTO> produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produto);
 
         return Ok(produtosDto);
     }
@@ -108,9 +108,9 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         if (produtoDto is null)
             return BadRequest("Produto não foi informado.");
 
-        var produto = _mapper.Map<Produto>(produtoDto);
+        Produto produto = _mapper.Map<Produto>(produtoDto);
 
-        var novoProduto = _unitOfWork.ProdutoRepository.Create(produto);
+        Produto novoProduto = _unitOfWork.ProdutoRepository.Create(produto);
         _unitOfWork.Commit();
 
         produtoDto = _mapper.Map<ProdutoDTO>(novoProduto);
@@ -124,9 +124,9 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         if (id != produtoDto.ProdutoId)
             return BadRequest("Id informado na URL não é igual ao informado no body.");
 
-        var produto = _mapper.Map<Produto>(produtoDto);
+        Produto produto = _mapper.Map<Produto>(produtoDto);
 
-        var novoProduto = _unitOfWork.ProdutoRepository.Update(produto);
+        Produto novoProduto = _unitOfWork.ProdutoRepository.Update(produto);
         _unitOfWork.Commit();
 
         produtoDto = _mapper.Map<ProdutoDTO>(novoProduto);
@@ -142,7 +142,7 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         if (produto is null)
             return StatusCode(500, $"Falha ao encontrar produto de id = {id}");
 
-        var retorno = _unitOfWork.ProdutoRepository.Delete(produto);
+        Produto retorno = _unitOfWork.ProdutoRepository.Delete(produto);
         _unitOfWork.Commit();
 
         return Ok($"Produto com id = {id} foi excluido.");

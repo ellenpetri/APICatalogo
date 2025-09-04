@@ -2,16 +2,10 @@
 
 namespace ApiCatalogo.Logging;
 
-public class CustomLoggerProvider : ILoggerProvider
+public class CustomLoggerProvider(CustomLoggerProviderConfiguration loggerConfig) : ILoggerProvider
 {
-    readonly CustomLoggerProviderConfiguration loggerConfig;
-    readonly ConcurrentDictionary<string, CustomerLogger> loggers = new();
-
-    public CustomLoggerProvider(CustomLoggerProviderConfiguration loggerConfig)
-    {
-
-        loggerConfig = loggerConfig;
-    }
+    private readonly CustomLoggerProviderConfiguration _loggerConfig = loggerConfig;;
+    private readonly ConcurrentDictionary<string, CustomerLogger> loggers = new();
 
     public ILogger CreateLogger(string categoryName)
     {

@@ -26,7 +26,6 @@ public class Produto : IValidatableObject
     [StringLength(300)]
     public string? ImagemUrl { get; set; }
 
-
     public float Estoque { get; set; }
 
     public DateTime DataCadastro { get; set; }
@@ -38,17 +37,14 @@ public class Produto : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (!String.IsNullOrWhiteSpace(this.Nome))
+        if (!String.IsNullOrWhiteSpace(Nome))
         {
-            var primeiraLetra = this.Nome[0].ToString();
+            string primeiraLetra = Nome[0].ToString();
             if (primeiraLetra != primeiraLetra.ToUpper())
-                yield return new ValidationResult("A primeira letra do produto deve ser maíscula", [nameof(this.Nome)]);
+                yield return new ValidationResult("A primeira letra do produto deve ser maíscula", [nameof(Nome)]);
         }
 
-        if (this.Estoque <= 0)
-            yield return new ValidationResult("O estoque deve ser maior que zero", [nameof(this.Estoque)]);
-
-
+        if (Estoque <= 0)
+            yield return new ValidationResult("O estoque deve ser maior que zero", [nameof(Estoque)]);
     }
-
 }

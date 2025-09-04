@@ -5,11 +5,9 @@ using System.Linq.Expressions;
 
 namespace ApiCatalogo.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T>(AppDbContext context) : IRepository<T> where T : class
 {
-    protected readonly AppDbContext _context;
-
-    public Repository(AppDbContext context) => _context = context;
+    protected readonly AppDbContext _context = context;
 
     public IEnumerable<T> GetAll()
     {

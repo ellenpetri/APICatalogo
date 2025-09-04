@@ -1,16 +1,11 @@
 ﻿namespace ApiCatalogo.Logging;
 
-public class CustomerLogger : ILogger
+public class CustomerLogger(string name, CustomLoggerProviderConfiguration config) : ILogger
 {
-    private readonly string _loggerName;
+    private readonly string _loggerName = name;
 
-    readonly CustomLoggerProviderConfiguration loggerConfig;
+    private readonly CustomLoggerProviderConfiguration loggerConfig = config;
 
-    public CustomerLogger(string name, CustomLoggerProviderConfiguration config)
-    {
-        _loggerName = name;
-        loggerConfig = config;
-    }
     public bool IsEnabled(LogLevel logLevel)
     {
         return logLevel == loggerConfig.LogLevel;
@@ -23,7 +18,7 @@ public class CustomerLogger : ILogger
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        string mensagem = $"{logLevel.ToString()}: {eventId.Id} - {formatter(state, exception)}";
+        string mensagem = $"{logLevel}: {eventId.Id} - {formatter(state, exception)}";
         EscreverTextoNoArquivo(mensagem);
     }
     private void EscreverTextoNoArquivo(string mensagem)
